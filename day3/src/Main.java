@@ -58,17 +58,14 @@ public class Main {
                 }
 
                 char flag = count1 >= count0 ? '0': '1';
-            System.out.println( );
                 for (int j = data.size() - 1; j >= 0; j--) {
                     if(data.get(j).charAt(i) != flag){
                         data.remove(j);
                     }
                 }
-                System.out.println();
                 i++;
                 if(i > bits) i = 0;
         }
-        System.out.println();
     }
 
     public static void main(String[] args) {

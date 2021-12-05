@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
 
 
@@ -8,10 +10,59 @@ public class Main {
     static class Board{
 
         private final int[] boardNumbers;
+        public boolean hasWon = false;
 
         private Board(int[] boardNumbers){
             this.boardNumbers = boardNumbers;
         }
+
+        public boolean checkDrawnNumbers(ArrayList<Integer> drawnNumbers){
+            //rows
+            for (int i = 0; i < 5; i++) {
+                boolean flag = true;
+                for (int j = 0; j < 5; j++) {
+                    if(!drawnNumbers.contains(boardNumbers[i*5 + j])){
+                        flag = false;
+                        break;
+                    }
+                }
+                if(flag){
+                    return true;
+                }
+            }
+
+            //cols
+            for (int i = 0; i < 5; i++) {
+                boolean flag = true;
+                for (int j = 0; j < 5; j++) {
+                    if(!drawnNumbers.contains(boardNumbers[i + j*5])){
+                        flag = false;
+                        break;
+                    }
+                }
+                if(flag){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        int calcScore(ArrayList<Integer> drawnNumbers){
+            ArrayList<Integer> list = new ArrayList<>();
+            for (int n : boardNumbers) {
+                if(!drawnNumbers.contains(n)){
+                    list.add(n);
+                }
+            }
+
+            int sum = 0;
+            for (int n : list) {
+                sum += n;
+            }
+
+            return sum;
+        }
+
     }
 
     static int[] readDrawNumbers(String[] data){
@@ -55,15 +106,35 @@ public class Main {
         return boards.toArray(new Board[0]);
     }
 
-    static void part1(){
+    static void addAll(ArrayList<Integer> list, int[] items){
+        for (int item :
+                items) {
+            list.add(item);
+        }
+    }
+
+    static ArrayList<Integer> part1(){
+        ArrayList<Integer> result = new ArrayList<>();
         String[] data = helper.readFile("day4/src/inputData.txt");
         Board[] boards = readBoards(data);
-        readDrawNumbers(data);
+        int[] numbers = readDrawNumbers(data);
+        ArrayList<Integer> drawnNumbers = new ArrayList<>();
 
+        for (int number : numbers) {
+            drawnNumbers.add(number);
+            for (Board board : boards) {
+                if(board.checkDrawnNumbers(drawnNumbers) && !board.hasWon){
+                    board.hasWon = true;
+                    result.add(board.calcScore(drawnNumbers) * number);
+                }
+            }
+        }
+        return result;
     }
 
 
     public static void main(String[] args) {
         part1();
+        System.out.println();
     }
 }
